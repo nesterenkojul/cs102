@@ -1,6 +1,5 @@
 import typing as tp
 
-
 def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     """
     Encrypts plaintext using a Caesar cipher.
@@ -15,7 +14,14 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     ''
     """
     ciphertext = ""
-    # PUT YOUR CODE HERE
+    for i in range(len(plaintext)):
+        if plaintext[i].isalpha():
+            index = ord(plaintext[i]) + shift
+            if (plaintext[i].islower() and index > 122) or (plaintext[i].isupper() and index > 90):
+                index -= 26
+            ciphertext += chr(index)
+        else:
+            ciphertext += plaintext[i]
     return ciphertext
 
 
@@ -33,7 +39,14 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     ''
     """
     plaintext = ""
-    # PUT YOUR CODE HERE
+    for i in range(len(ciphertext)):
+        if ciphertext[i].isalpha():
+            index = ord(ciphertext[i]) - shift
+            if (ciphertext[i].islower() and index < 97) or (ciphertext[i].isupper() and index < 65):
+                index += 26
+            plaintext += chr(index)
+        else:
+            plaintext += ciphertext[i]
     return plaintext
 
 
@@ -42,5 +55,19 @@ def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
     Brute force breaking a Caesar cipher.
     """
     best_shift = 0
-    # PUT YOUR CODE HERE
+    shift = 0
+    while True:
+        plaintext = ""
+        for i in range(len(ciphertext)):
+            if ciphertext[i].isalpha():
+                index = ord(ciphertext[i]) - shift
+                if (ciphertext[i].islower() and index < 97) or (ciphertext[i].isupper() and index < 65):
+                    index += 26
+                plaintext += chr(index)
+            else:
+                plaintext += ciphertext[i]        
+        if plaintext in dictionary:
+            break
+        shift += 1
+    best_shift = shift
     return best_shift
