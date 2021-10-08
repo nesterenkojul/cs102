@@ -18,9 +18,7 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
             k = 0
         if plaintext[i].isalpha():
             index = ord(plaintext[i]) + alphabet.find(keyword[k].lower())
-            if (plaintext[i].islower() and index > 122) or (
-                plaintext[i].isupper() and index > 90
-            ):
+            if (plaintext[i].islower() and index > 122) or (plaintext[i].isupper() and index > 90):
                 index -= 26
             ciphertext += chr(index)
         else:
@@ -49,9 +47,7 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
             k = 0
         if ciphertext[i].isalpha():
             index = ord(ciphertext[i]) - alphabet.find(keyword[k].lower())
-            if (ciphertext[i].islower() and index < 97) or (
-                ciphertext[i].isupper() and index < 65
-            ):
+            if (ciphertext[i].islower() and index < 97) or (ciphertext[i].isupper() and index < 65):
                 index += 26
             plaintext += chr(index)
         else:
