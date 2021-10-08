@@ -18,7 +18,9 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     for i in range(len(plaintext)):
         if plaintext[i].isalpha():
             index = ord(plaintext[i]) + shift
-            if (plaintext[i].islower() and index > 122) or (plaintext[i].isupper() and index > 90):
+            if (plaintext[i].islower() and index > 122) or (
+                plaintext[i].isupper() and index > 90
+            ):
                 index -= 26
             ciphertext += chr(index)
         else:
@@ -43,7 +45,9 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     for i in range(len(ciphertext)):
         if ciphertext[i].isalpha():
             index = ord(ciphertext[i]) - shift
-            if (ciphertext[i].islower() and index < 97) or (ciphertext[i].isupper() and index < 65):
+            if (ciphertext[i].islower() and index < 97) or (
+                ciphertext[i].isupper() and index < 65
+            ):
                 index += 26
             plaintext += chr(index)
         else:
@@ -62,11 +66,13 @@ def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
         for i in range(len(ciphertext)):
             if ciphertext[i].isalpha():
                 index = ord(ciphertext[i]) - shift
-                if (ciphertext[i].islower() and index < 97) or (ciphertext[i].isupper() and index < 65):
+                if (ciphertext[i].islower() and index < 97) or (
+                    ciphertext[i].isupper() and index < 65
+                ):
                     index += 26
                 plaintext += chr(index)
             else:
-                plaintext += ciphertext[i]        
+                plaintext += ciphertext[i]
         if plaintext in dictionary:
             break
         shift += 1
