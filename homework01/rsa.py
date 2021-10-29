@@ -53,7 +53,7 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     x = 0  # значение пятого столбца таблицы
     y = 1  # значение шестого столбца таблицы
     list.append(d)
-    while с != 0:
+    while c != 0:
         a = b
         b = c
         c = a % b
