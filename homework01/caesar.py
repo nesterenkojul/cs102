@@ -15,14 +15,14 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     ''
     """
     ciphertext = ""
-    for i in range(len(plaintext)):
-        if plaintext[i].isalpha():
-            index = ord(plaintext[i]) + shift
-            if (plaintext[i].islower() and index > 122) or (plaintext[i].isupper() and index > 90):
-                index -= 26
-            ciphertext += chr(index)
-        else:
-            ciphertext += plaintext[i]
+    for i, letter in enumerate(plaintext):
+          if letter.isalpha():
+               index = ord(letter) + shift
+               if (letter.islower() and index > ord('z')) or (letter.isupper() and index > ord('Z')):
+                    index -= 26
+               ciphertext += chr(index)
+          else:
+               ciphertext += letter
     return ciphertext
 
 
@@ -40,14 +40,14 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     ''
     """
     plaintext = ""
-    for i in range(len(ciphertext)):
-        if ciphertext[i].isalpha():
-            index = ord(ciphertext[i]) - shift
-            if (ciphertext[i].islower() and index < 97) or (ciphertext[i].isupper() and index < 65):
-                index += 26
-            plaintext += chr(index)
-        else:
-            plaintext += ciphertext[i]
+    for i, letter in enumerate(ciphertext):
+          if letter.isalpha():
+               index = ord(letter) - shift
+               if (ciphertext[i].islower() and index < ord('a')) or (ciphertext[i].isupper() and index < ord('A')):
+                    index += 26
+               plaintext += chr(index)
+          else:
+               plaintext += letter
     return plaintext
 
 
@@ -55,22 +55,18 @@ def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
     """
     Brute force breaking a Caesar cipher.
     """
-    best_shift = 0
     shift = 0
     while True:
         plaintext = ""
-        for i in range(len(ciphertext)):
-            if ciphertext[i].isalpha():
-                index = ord(ciphertext[i]) - shift
-                if (ciphertext[i].islower() and index < 97) or (
-                    ciphertext[i].isupper() and index < 65
-                ):
-                    index += 26
-                plaintext += chr(index)
-            else:
-                plaintext += ciphertext[i]
+        for i, letter in enumerate(ciphertext):
+               if letter.isalpha():
+                    index = ord(letter) - shift
+                    if (ciphertext[i].islower() and index < ord('a')) or (ciphertext[i].isupper() and index < ord('A')):
+                         index += 26
+                    plaintext += chr(index)
+               else:
+                    plaintext += letter
         if plaintext in dictionary:
             break
         shift += 1
-    best_shift = shift
-    return best_shift
+    return shift
