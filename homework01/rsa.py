@@ -46,19 +46,19 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     23
     """
     list = []
-    A = phi
-    B = e
-    C = A % B
-    D = A // B
-    x = 0
-    y = 1
-    list.append(D)
-    while C != 0:
-        A = B
-        B = C
-        C = A % B
-        D = A // B
-        list.append(D)
+    a = phi  # значение первого столбца таблицы
+    b = e  # значение второго столбца таблицы
+    c = a % b  # значение третьего столбца таблицы
+    d = a // b  # значение четвертого столбца таблицы
+    x = 0  # значение пятого столбца таблицы
+    y = 1  # значение шестого столбца таблицы
+    list.append(d)
+    while с != 0:
+        a = b
+        b = c
+        c = a % b
+        d = a // b
+        list.append(d)
     k = -2
     while k >= -len(list):
         x0 = x
