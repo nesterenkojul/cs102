@@ -48,7 +48,7 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
             ):
                 index += 26
             plaintext += chr(index)
-          else:
+        else:
             plaintext += letter
     return plaintext
 
