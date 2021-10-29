@@ -16,13 +16,13 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     """
     ciphertext = ""
     for i, letter in enumerate(plaintext):
-          if letter.isalpha():
-               index = ord(letter) + shift
-               if (letter.islower() and index > ord('z')) or (letter.isupper() and index > ord('Z')):
-                    index -= 26
-               ciphertext += chr(index)
-          else:
-               ciphertext += letter
+        if letter.isalpha():
+            index = ord(letter) + shift
+            if (letter.islower() and index > ord("z")) or (letter.isupper() and index > ord("Z")):
+                index -= 26
+            ciphertext += chr(index)
+        else:
+            ciphertext += letter
     return ciphertext
 
 
@@ -41,13 +41,15 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     """
     plaintext = ""
     for i, letter in enumerate(ciphertext):
-          if letter.isalpha():
-               index = ord(letter) - shift
-               if (ciphertext[i].islower() and index < ord('a')) or (ciphertext[i].isupper() and index < ord('A')):
-                    index += 26
-               plaintext += chr(index)
+        if letter.isalpha():
+            index = ord(letter) - shift
+            if (ciphertext[i].islower() and index < ord("a")) or (
+                ciphertext[i].isupper() and index < ord("A")
+            ):
+                index += 26
+            plaintext += chr(index)
           else:
-               plaintext += letter
+            plaintext += letter
     return plaintext
 
 
@@ -59,13 +61,15 @@ def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
     while True:
         plaintext = ""
         for i, letter in enumerate(ciphertext):
-               if letter.isalpha():
-                    index = ord(letter) - shift
-                    if (ciphertext[i].islower() and index < ord('a')) or (ciphertext[i].isupper() and index < ord('A')):
-                         index += 26
-                    plaintext += chr(index)
-               else:
-                    plaintext += letter
+            if letter.isalpha():
+                index = ord(letter) - shift
+                if (ciphertext[i].islower() and index < ord("a")) or (
+                    ciphertext[i].isupper() and index < ord("A")
+                ):
+                    index += 26
+                plaintext += chr(index)
+            else:
+                plaintext += letter
         if plaintext in dictionary:
             break
         shift += 1
