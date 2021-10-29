@@ -45,25 +45,25 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
-    list = []
+    divs = []
     a = phi  # значение первого столбца таблицы
     b = e  # значение второго столбца таблицы
     c = a % b  # значение третьего столбца таблицы
     d = a // b  # значение четвертого столбца таблицы
     x = 0  # значение пятого столбца таблицы
     y = 1  # значение шестого столбца таблицы
-    list.append(d)
+    divs.append(d)
     while c != 0:
         a = b
         b = c
         c = a % b
         d = a // b
-        list.append(d)
+        divs.append(d)
     k = -2
-    while k >= -len(list):
+    while k >= -len(divs):
         x0 = x
         x = y
-        y = x0 - x * list[k]
+        y = x0 - x * divs[k]
         k -= 1
     return y % phi
 
