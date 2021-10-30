@@ -10,19 +10,16 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     'LXFOPVEFRNHR'
     """
     ciphertext = ""
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
     k = 0
-    end = 0
-    for i in range(len(plaintext)):
-        if k > len(keyword) - 1:
-            k = 0
-        if plaintext[i].isalpha():
-            index = ord(plaintext[i]) + alphabet.find(keyword[k].lower())
-            if (plaintext[i].islower() and index > 122) or (plaintext[i].isupper() and index > 90):
+    for i, letter in enumerate(plaintext):
+        k = 0 if k > len(keyword) - 1 else k
+        if letter.isalpha():
+            index = ord(letter) + ord(keyword[k].lower()) - ord('a')
+            if (letter.islower() and index > ord('z')) or (letter.isupper() and index > ord('Z')):
                 index -= 26
             ciphertext += chr(index)
         else:
-            ciphertext += plaintext[i]
+            ciphertext += letter
         k += 1
     return ciphertext
 
@@ -39,18 +36,15 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     'ATTACKATDAWN'
     """
     plaintext = ""
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
     k = 0
-    end = 0
-    for i in range(len(ciphertext)):
-        if k > len(keyword) - 1:
-            k = 0
-        if ciphertext[i].isalpha():
-            index = ord(ciphertext[i]) - alphabet.find(keyword[k].lower())
-            if (ciphertext[i].islower() and index < 97) or (ciphertext[i].isupper() and index < 65):
+    for i, letter in enumerate(ciphertext):
+        k = 0 if k > len(keyword) - 1 else k
+        if letter.isalpha():
+            index = ord(letter) - ord(keyword[k].lower()) + ord('a')
+            if (letter.islower() and index < ord('a')) or (letter.isupper() and index < ord('A')):
                 index += 26
             plaintext += chr(index)
         else:
-            plaintext += ciphertext[i]
+            plaintext += letter
         k += 1
     return plaintext
