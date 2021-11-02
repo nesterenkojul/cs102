@@ -159,8 +159,19 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
-    # TODO: Add doctests with bad puzzles
-    pass
+    for i in range(len(solution)):
+        row = get_row(solution, (i, 0))
+        col = get_col(solution, (0, i))
+        block = get_block(solution, (i // 3 * 3, i % 3 * 3))
+        check_row = [0 for a, row_element in enumerate(
+            row[:-1]) if row_element in row[a + 1:]]
+        check_col = [0 for b, col_element in enumerate(
+            col[:-1]) if col_element in col[b + 1:]]
+        check_block = [0 for c, block_element in enumerate(
+            block[:-1]) if block_element in block[c + 1:]]
+        if check_row or check_col or check_block:
+            return False
+    return True
 
 
 def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
