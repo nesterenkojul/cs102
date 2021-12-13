@@ -121,13 +121,14 @@ def shortest_path(
     path = [exit_coord]
     current_cell = exit_coord
     steps_to_exit = grid[exit_coord[0]][exit_coord[1]]
-    k = steps_to_exit
+    k = int(steps_to_exit)
 
     while grid[current_cell[0]][current_cell[1]] != 1:
         if current_cell[0] > 0 and grid[current_cell[0] - 1][current_cell[1]] == k - 1:
             next_cell = (current_cell[0] - 1, current_cell[1])
         elif (
-            current_cell[0] < len(grid) - 1 and grid[current_cell[0] + 1][current_cell[1]] == k - 1
+            current_cell[0] < len(
+                grid) - 1 and grid[current_cell[0] + 1][current_cell[1]] == k - 1
         ):
             next_cell = (current_cell[0] + 1, current_cell[1])
         elif current_cell[1] > 0 and grid[current_cell[0]][current_cell[1] - 1] == k - 1:
@@ -148,6 +149,8 @@ def shortest_path(
         if grid[current_cell[0]][current_cell[1]] == 1:
             return path
 
+    return None
+
 
 def encircled_exit(grid: List[List[Union[str, int]]], coord: Tuple[int, int]) -> bool:
     """
@@ -158,11 +161,11 @@ def encircled_exit(grid: List[List[Union[str, int]]], coord: Tuple[int, int]) ->
     """
     if coord[0] == 0 and grid[coord[0] + 1][coord[1]] != " ":
         return True
-    elif coord[0] == len(grid) - 1 and grid[coord[0] - 1][coord[1]] != " ":
+    if coord[0] == len(grid) - 1 and grid[coord[0] - 1][coord[1]] != " ":
         return True
-    elif coord[1] == 0 and grid[coord[0]][coord[1] + 1] != " ":
+    if coord[1] == 0 and grid[coord[0]][coord[1] + 1] != " ":
         return True
-    elif coord[1] == len(grid[0]) - 1 and grid[coord[0]][coord[1] - 1] != " ":
+    if coord[1] == len(grid[0]) - 1 and grid[coord[0]][coord[1] - 1] != " ":
         return True
     return False
 
