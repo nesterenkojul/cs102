@@ -126,8 +126,7 @@ def shortest_path(
         if current_cell[0] > 0 and grid[current_cell[0] - 1][current_cell[1]] == k - 1:
             next_cell = (current_cell[0] - 1, current_cell[1])
         elif (
-            current_cell[0] < len(
-                grid) - 1 and grid[current_cell[0] + 1][current_cell[1]] == k - 1
+            current_cell[0] < len(grid) - 1 and grid[current_cell[0] + 1][current_cell[1]] == k - 1
         ):
             next_cell = (current_cell[0] + 1, current_cell[1])
         elif current_cell[1] > 0 and grid[current_cell[0]][current_cell[1] - 1] == k - 1:
