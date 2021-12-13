@@ -1,4 +1,3 @@
-from copy import deepcopy
 from random import choice, randint
 from typing import List, Optional, Tuple, Union
 
@@ -127,7 +126,8 @@ def shortest_path(
         if current_cell[0] > 0 and grid[current_cell[0] - 1][current_cell[1]] == k - 1:
             next_cell = (current_cell[0] - 1, current_cell[1])
         elif (
-            current_cell[0] < len(grid) - 1 and grid[current_cell[0] + 1][current_cell[1]] == k - 1
+            current_cell[0] < len(
+                grid) - 1 and grid[current_cell[0] + 1][current_cell[1]] == k - 1
         ):
             next_cell = (current_cell[0] + 1, current_cell[1])
         elif current_cell[1] > 0 and grid[current_cell[0]][current_cell[1] - 1] == k - 1:
@@ -160,11 +160,11 @@ def encircled_exit(grid: List[List[Union[str, int]]], coord: Tuple[int, int]) ->
     """
     if coord[0] == 0 and grid[coord[0] + 1][coord[1]] != " ":
         return True
-    elif coord[0] == len(grid) - 1 and grid[coord[0] - 1][coord[1]] != " ":
+    if coord[0] == len(grid) - 1 and grid[coord[0] - 1][coord[1]] != " ":
         return True
-    elif coord[1] == 0 and grid[coord[0]][coord[1] + 1] != " ":
+    if coord[1] == 0 and grid[coord[0]][coord[1] + 1] != " ":
         return True
-    elif coord[1] == len(grid[0]) - 1 and grid[coord[0]][coord[1] - 1] != " ":
+    if coord[1] == len(grid[0]) - 1 and grid[coord[0]][coord[1] - 1] != " ":
         return True
     return False
 
@@ -185,23 +185,23 @@ def solve_maze(
     if encircled_exit(grid, exits[0]) or encircled_exit(grid, exits[1]):
         return (grid, None)
 
-    enter = exits[0]
+    way_in = exits[0]
 
-    exit = exits[1]
+    way_out = exits[1]
 
-    grid[enter[0]][enter[1]] = 1
-    grid[exit[0]][exit[1]] = 0
+    grid[way_in[0]][way_in[1]] = 1
+    grid[way_out[0]][way_out[1]] = 0
 
     for x, row in enumerate(grid):
         for y, _ in enumerate(row):
             if grid[x][y] == " ":
                 grid[x][y] = 0
     k = 0
-    while grid[exit[0]][exit[1]] == 0:
+    while grid[way_out[0]][way_out[1]] == 0:
         k += 1
         grid = make_step(grid, k)
 
-    path = shortest_path(grid, exit)
+    path = shortest_path(grid, way_out)
     return grid, path
 
 
