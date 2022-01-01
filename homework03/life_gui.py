@@ -1,6 +1,7 @@
 import pygame
-from life import GameOfLife
 from pygame.locals import *
+
+from life import GameOfLife
 from ui import UI
 
 
@@ -71,3 +72,9 @@ class GUI(UI):
             pygame.display.flip()
             clock.tick(self.speed)
         pygame.quit()
+
+
+if __name__ == "__main__":
+    life = GameOfLife((40, 50), max_generations=50)
+    gui = GUI(life)
+    gui.run()

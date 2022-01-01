@@ -161,3 +161,8 @@ class GameOfLife:
                     new_row.append(cell)
             new_grid.append(new_row)
         return new_grid
+
+
+if __name__ == "__main__":
+    game = GameOfLife(320, 240, 20)
+    game.run()
