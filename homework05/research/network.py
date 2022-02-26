@@ -19,14 +19,14 @@ def ego_network(
     :param friends: Идентификаторы друзей, между которыми устанавливаются связи.
     """
     network = []
-    '''
+    """
     user_friends = get_friends(user_id=user_id)
     friends = friends if friends else user_friends.items
-    '''
+    """
     connections = get_mutual(user_id, target_uids=friends)
     for node in connections:
-        for common in node['common_friends']:
-            network.append((node['id'], common))
+        for common in node["common_friends"]:
+            network.append((node["id"], common))
     return network
 
 
@@ -76,9 +76,23 @@ def describe_communities(
                     break
     return pd.DataFrame(data=data, columns=["cluster"] + fields)
 
+
 if __name__ == "__main__":
-    net = ego_network(friends=[5930007, 6936985, 7767488, 12035805, 19427564, 20469540, 20670690, 24846354,
-                               233641282, 51054276, 138215877])
+    net = ego_network(
+        friends=[
+            5930007,
+            6936985,
+            7767488,
+            12035805,
+            19427564,
+            20469540,
+            20670690,
+            24846354,
+            233641282,
+            51054276,
+            138215877,
+        ]
+    )
     print(net)
     plot_communities(net)
     communities = get_communities(net)

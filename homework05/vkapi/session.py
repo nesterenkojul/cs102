@@ -27,9 +27,9 @@ class Session:
         self.session = requests.Session()
         self.retry_strategy = Retry(
             total=max_retries,
-            backoff_factor = backoff_factor,
+            backoff_factor=backoff_factor,
             method_whitelist=["GET", "POST"],
-            status_forcelist=list(range(400, 600))
+            status_forcelist=list(range(400, 600)),
         )
         self.adapter = HTTPAdapter(max_retries=self.retry_strategy)
         self.session.mount(base_url, self.adapter)

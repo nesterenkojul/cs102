@@ -25,8 +25,9 @@ def example():
     corpus = list(dictionary.doc2bow(text) for text in docs)
     ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=10, id2word=dictionary, passes=15)
     vis = pyLDAvis.gensim_models.prepare(ldamodel, corpus, dictionary)
-    pyLDAvis.save_html(vis, 'result.html')
-    webbrowser.open('file://' + os.path.realpath('result.html'), new=2)
+    pyLDAvis.save_html(vis, "result.html")
+    webbrowser.open("file://" + os.path.realpath("result.html"), new=2)
+
 
 if __name__ == "__main__":
     example()
