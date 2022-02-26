@@ -18,7 +18,16 @@ def ego_network(
     :param user_id: Идентификатор пользователя, для которого строится граф друзей.
     :param friends: Идентификаторы друзей, между которыми устанавливаются связи.
     """
-    pass
+    network = []
+    '''
+    user_friends = get_friends(user_id=user_id)
+    friends = friends if friends else user_friends.items
+    '''
+    connections = get_mutual(user_id, target_uids=friends)
+    for node in connections:
+        for common in node['common_friends']:
+            network.append((node['id'], common))
+    return network
 
 
 def plot_ego_network(net: tp.List[tp.Tuple[int, int]]) -> None:
@@ -66,3 +75,12 @@ def describe_communities(
                     data.append([cluster_n] + [friend.get(field) for field in fields])  # type: ignore
                     break
     return pd.DataFrame(data=data, columns=["cluster"] + fields)
+
+if __name__ == "__main__":
+    net = ego_network(friends=[5930007, 6936985, 7767488, 12035805, 19427564, 20469540, 20670690, 24846354,
+                               233641282, 51054276, 138215877])
+    print(net)
+    plot_communities(net)
+    communities = get_communities(net)
+    user_friends = get_friends(user_id=None, fields=["first_name", "last_name"])
+    print(describe_communities(communities, user_friends.items, fields=["first_name", "last_name"]))
