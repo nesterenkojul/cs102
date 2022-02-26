@@ -24,11 +24,8 @@ def ego_network(
     """
     connections = get_mutual(user_id, target_uids=friends)
     for node in connections:
-        if node is int:
-            network.append(node)
-        else:
-            for common in node["common_friends"]:
-                network.append((node["id"], common))
+        for common in node["common_friends"]:  # type: ignore
+            network.append((node["id"], common))  # type: ignore
     return network
 
 
