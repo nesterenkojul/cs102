@@ -17,11 +17,12 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     ages = []
     friends = get_friends(user_id, fields=["bdate"])
     for friend in friends.items:
-        try:
-            age = dt.datetime.today().year - int(friend["bdate"].split(".")[2])
-            ages.append(age)
-        except:
-            pass
+        if friend is not int:
+            try:
+                age = dt.datetime.today().year - int(friend["bdate"].split(".")[2])
+                ages.append(age)
+            except:
+                pass
     if ages:
         return statistics.median(ages)
     return None
