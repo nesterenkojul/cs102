@@ -17,7 +17,7 @@ def extract_news(parser):
     ]
     comments = [0 if element.isalpha() else int(element.split()[0]) for element in discussions]
     news_list = []
-    for i in range(len(titles)):
+    for i, _ in enumerate(titles):
         news_list.append(
             {
                 "author": authors[i],
