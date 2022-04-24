@@ -11,8 +11,8 @@
             <thead>
                 <th>Title</th>
                 <th>Author</th>
-                <th>Likes</th>
-                <th>Comments</th>
+                <th>#Likes</th>
+                <th>#Comments</th>
                 <th colspan="3">Label</th>
             </thead>
             <tbody>
@@ -31,7 +31,6 @@
             <tfoot class="full-width">
                 <tr>
                     <th colspan="7">
-                        <a href="/classify" class="ui left floated small primary button">I Wanna recommendations!</a>
                         <a href="/update" class="ui right floated small primary button">I Wanna more Hacker News!</a>
                     </th>
                 </tr>
