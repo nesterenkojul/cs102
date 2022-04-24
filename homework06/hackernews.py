@@ -26,9 +26,9 @@ def news_list():
 @route("/add_label/")
 def add_label():
     label = request.query.label
-    id = request.query.id
+    record_id = request.query.id
     s = session()
-    record = s.query(News).filter(News.id == id).all()[0]
+    record = s.query(News).filter(News.id == record_id).all()[0]
     record.label = label
     s.add(record)
     s.commit()
@@ -64,27 +64,27 @@ def update_news():
 def classify_news():
     s = session()
     labeled = s.query(News).filter(News.label != None).all()
-    X = [row.title for row in labeled]
-    Y = [row.label for row in labeled]
-    X = [prepare(x) for x in X]
-    X_train, Y_train = X[: round(len(labeled) * 0.7)], Y[: round(len(labeled) * 0.7)]
-    X_test, Y_test = X[round(len(labeled) * 0.7) :], Y[round(len(labeled) * 0.7) :]
+    x = [row.title for row in labeled]
+    y = [row.label for row in labeled]
+    x = [prepare(title) for title in x]
+    x_train, y_train = x[: round(len(labeled) * 0.7)], y[: round(len(labeled) * 0.7)]
+    x_test, y_test = x[round(len(labeled) * 0.7) :], y[round(len(labeled) * 0.7) :]
     model = NaiveBayesClassifier(1)
-    model.fit(X_train, Y_train)
-    print(model.score(X_test, Y_test))
+    model.fit(x_train, y_train)
+    print(model.score(x_test, y_test))
     unlabeled = s.query(News).filter(News.label == None).all()
-    X_class = [prepare(row.title) for row in unlabeled]
-    predictions = model.predict(X_class)
+    x_class = [prepare(row.title) for row in unlabeled]
+    predictions = model.predict(x_class)
     classified_news = []
     second_priority = []
     third_priority = []
-    for i in range(len(unlabeled)):
+    for i, row in enumerate(unlabeled):
         if predictions[i] == "good":
-            classified_news.append(unlabeled[i])
+            classified_news.append(row)
         elif predictions[i] == "maybe":
-            second_priority.append(unlabeled[i])
+            second_priority.append(row)
         else:
-            third_priority.append(unlabeled[i])
+            third_priority.append(row)
     classified_news.extend(second_priority)
     classified_news.extend(third_priority)
     return template("news_recommendations", rows=classified_news)
