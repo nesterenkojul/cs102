@@ -92,7 +92,7 @@ def choose_action(message):
                         )
         if deadline_count == 0:
             bot.send_message(message.chat.id, "Дедлайнов на ближайшей неделе нет. Гуляем!")
-        sleep(10)
+        sleep(deadline_count)
         start(message)
 
 
