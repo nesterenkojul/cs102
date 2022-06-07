@@ -224,7 +224,11 @@ def add_new_subject(message):
 
 def add_new_subject_url(message):
     """Вносим новую ссылку на таблицу предмета в Google-таблицу"""
-    text = 'https://' + message.text if (len(message.text) > 3 and message.text[:4] == 'www.') else message.text
+    text = (
+        "https:///" + message.text
+        if (len(message.text) > 3 and message.text[:4] == "www.")
+        else message.text
+    )
     is_valid = validators.url(text)
     if not is_valid:
         new = bot.send_message(message.chat.id, "Cсылка не рабочая. Введи нормальную.")
@@ -265,7 +269,11 @@ def update_subject_url(message):
 
 def update_cell_data(message, action):
     if action == "Введи новую ссылку" or action == "Cсылка не рабочая. Введи нормальную.":
-        text = 'https://' + message.text if (len(message.text) > 3 and message.text[:4] == 'www.') else message.text
+        text = (
+            "https://" + message.text
+            if (len(message.text) > 3 and message.text[:4] == "www.")
+            else message.text
+        )
         is_valid = validators.url(text)
         if not is_valid:
             new = bot.send_message(message.chat.id, "Cсылка не рабочая. Введи нормальную.")
