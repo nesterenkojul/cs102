@@ -5,6 +5,7 @@ from time import sleep
 import gspread
 import pandas as pd
 import telebot
+import validators
 
 bot = telebot.TeleBot("5174706321:AAEbmug9mee0WARtwobAoEg_W2fpr7OzzHc")
 ROW, COL = None, None
@@ -85,6 +86,7 @@ def choose_action(message):
                     date = convert_date(cell_data)
                     delta = date - today
                     if 0 < delta.days < 7:
+                        deadline_count += 1
                         bot.send_message(
                             message.chat.id,
                             f"{ df.iat[i, 0] }. Работа №{ j - 1 }\nДедлайн <b>{ df.iat[i, j] }</b>",
@@ -120,8 +122,8 @@ def choose_subject_action(message):
         bot.register_next_step_handler(info, choose_removal_option)
 
 
-def choose_deadline_action(message):
-    """Выбираем действие в разделе Изменить дедлайны"""
+def choose_deadline_action(message, action):
+    """Выбираем действие в разделе Редактировать дедлайн"""
     table_data = access_current_sheet()
     ws = table_data[0]
     global ROW, COL
@@ -129,7 +131,7 @@ def choose_deadline_action(message):
     ROW = cell.row
     COL = cell.col
     info = bot.send_message(message.chat.id, "Введи номер работы")
-    bot.register_next_step_handler(info, update_subject_deadline)
+    bot.register_next_step_handler(info, update_subject_deadline, action)
 
 
 def choose_removal_option(message):
@@ -158,10 +160,11 @@ def choose_subject(message):
     elif message.text == "Удалить предмет":
         bot.register_next_step_handler(info, delete_subject)
     elif message.text == "Добавить новый дедлайн" or message.text == "Редактировать дедлайн":
-        bot.register_next_step_handler(info, choose_deadline_action)
+        action = message.text
+        bot.register_next_step_handler(info, choose_deadline_action, action)
 
 
-def update_subject_deadline(message):
+def update_subject_deadline(message, action):
     """Обновляем дедлайн"""
     global COL
     if not message.text.isdigit():
@@ -180,6 +183,14 @@ def update_subject_deadline(message):
         return
     table_data = access_current_sheet()
     ws = table_data[0]
+    df = table_data[2]
+    if action == "Редактировать дедлайн" and int(message.text) > df.shape[1] - 2:
+        info = bot.send_message(
+            message.chat.id,
+            "Такой работы нет (пока). Попробуй еще раз",
+        )
+        bot.register_next_step_handler(info, update_subject_deadline, action)
+        return
     current_date = ws.cell(ROW, COL + int(message.text) + 1).value
     if current_date:
         info = bot.send_message(
@@ -187,6 +198,13 @@ def update_subject_deadline(message):
             f"Cейчас по этой работе стоит дедлайн <b>{ current_date }</b>.\nВведи новую дату в формате\nDD/MM/YYYY",
             parse_mode="HTML",
         )
+    elif action == "Редактировать дедлайн":
+        info = bot.send_message(
+            message.chat.id,
+            "Такой работы нет (пока). Попробуй еще раз",
+        )
+        bot.register_next_step_handler(info, update_subject_deadline, action)
+        return
     else:
         info = bot.send_message(message.chat.id, "Введи дату дедлайна в формате\nDD/MM/YYYY")
     COL += int(message.text) + 1
@@ -206,10 +224,16 @@ def add_new_subject(message):
 
 def add_new_subject_url(message):
     """Вносим новую ссылку на таблицу предмета в Google-таблицу"""
+    text = 'https://' + message.text if (len(message.text) > 3 and message.text[:4] == 'www.') else message.text
+    is_valid = validators.url(text)
+    if not is_valid:
+        new = bot.send_message(message.chat.id, "Cсылка не рабочая. Введи нормальную.")
+        bot.register_next_step_handler(new, add_new_subject_url)
+        return
     table_data = access_current_sheet()
     ws = table_data[0]
     df = table_data[2]
-    ws.update_cell(df.shape[0] + 1, 2, message.text)
+    ws.update_cell(df.shape[0] + 1, 2, text)
     bot.send_message(message.chat.id, "Предмет успешно добавлен")
     sleep(2)
     start(message)
@@ -224,7 +248,7 @@ def update_subject_title(message):
     ROW = cell.row
     COL = cell.col
     new = bot.send_message(message.chat.id, "Введи новое название")
-    bot.register_next_step_handler(new, update_cell_data)
+    bot.register_next_step_handler(new, update_cell_data, new.text)
 
 
 def update_subject_url(message):
@@ -236,10 +260,18 @@ def update_subject_url(message):
     ROW = cell.row
     COL = cell.col + 1
     new = bot.send_message(message.chat.id, "Введи новую ссылку")
-    bot.register_next_step_handler(new, update_cell_data)
+    bot.register_next_step_handler(new, update_cell_data, new.text)
 
 
-def update_cell_data(message):
+def update_cell_data(message, action):
+    if action == "Введи новую ссылку" or action == "Cсылка не рабочая. Введи нормальную.":
+        text = 'https://' + message.text if (len(message.text) > 3 and message.text[:4] == 'www.') else message.text
+        is_valid = validators.url(text)
+        if not is_valid:
+            new = bot.send_message(message.chat.id, "Cсылка не рабочая. Введи нормальную.")
+            bot.register_next_step_handler(new, update_cell_data, new.text)
+            return
+        message.text = text
     global ROW, COL
     table_data = access_current_sheet()
     ws = table_data[0]
@@ -251,23 +283,20 @@ def update_cell_data(message):
 
 def update_cell_datetime(message):
     try:
-        msg = message.text.split("/")
-        if (
-            len(msg) != 3
-            or not (msg[0].isdigit() and msg[1].isdigit() and msg[2].isdigit())
-            or int(msg[0]) > 31
-            or int(msg[1]) > 12
-        ):
+        today = datetime.now()
+        date = convert_date(message.text)
+        delta = date - today
+        if delta.days // 365 > 5 or date < today:
             info = bot.send_message(
                 message.chat.id,
-                "Ошибочка. Дата должна соответствовать форматy DD/MM/YYYY\nПопробуй ещё раз",
+                "Ошибочка. Дата должна иметь адекватные временные рамки.\nПопробуй ещё раз",
             )
             bot.register_next_step_handler(info, update_cell_datetime)
             return
     except Exception as e:
         info = bot.send_message(
             message.chat.id,
-            "Ошибочка. Дата должна соответствовать форматy DD/MM/YYYY\nПопробуй ещё раз",
+            "Ошибочка. Дата должна соответствовать форматy DD/MM/YYYY и иметь адекватные временные рамки.\nПопробуй ещё раз",
         )
         bot.register_next_step_handler(info, update_cell_datetime)
         return
