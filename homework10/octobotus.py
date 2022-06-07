@@ -11,13 +11,13 @@ ROW, COL = None, None
 
 
 def convert_date(date: str = "01/01/00"):
-    """ Конвертируем дату из строки в datetime """
+    """Конвертируем дату из строки в datetime"""
     ddmmyyyy = date.split("/")
     return datetime(int(ddmmyyyy[2]), int(ddmmyyyy[1]), int(ddmmyyyy[0]))
 
 
 def connect_table(message):
-    """ Подключаемся к Google-таблице """
+    """Подключаемся к Google-таблице"""
     url = message.text
     sheet_id = url.split("/")[5]
     try:
@@ -35,7 +35,7 @@ def connect_table(message):
 
 
 def access_current_sheet():
-    """ Обращаемся к Google-таблице """
+    """Обращаемся к Google-таблице"""
     try:
         with open("tables.json") as json_file:
             tables = json.load(json_file)
@@ -52,7 +52,7 @@ def access_current_sheet():
 
 
 def choose_action(message):
-    """ Обрабатываем действия верхнего уровня """
+    """Обрабатываем действия верхнего уровня"""
     if message.text == "Подключить Google-таблицу":
         msg = bot.send_message(message.chat.id, "Отправь мне полную ссылку на таблицу")
         bot.register_next_step_handler(msg, connect_table)
@@ -94,7 +94,7 @@ def choose_action(message):
 
 
 def choose_subject_action(message):
-    """ Выбираем действие в разделе Редактировать предметы """
+    """Выбираем действие в разделе Редактировать предметы"""
     if message.text == "Добавить новый предмет":
         info = bot.send_message(message.chat.id, "Введи название предмета, который хочешь добавить")
         bot.register_next_step_handler(info, add_new_subject)
@@ -118,7 +118,7 @@ def choose_subject_action(message):
 
 
 def choose_deadline_action(message):
-    """ Выбираем действие в разделе Редактировать дедлайн """
+    """Выбираем действие в разделе Изменить дедлайны"""
     table_data = access_current_sheet()
     ws = table_data[0]
     global ROW, COL
@@ -130,7 +130,7 @@ def choose_deadline_action(message):
 
 
 def choose_removal_option(message):
-    """ Уточняем, точно ли надо удалить все """
+    """Уточняем, точно ли надо удалить все"""
     if message.text == "Да, гори оно всё огнём":
         clear_subject_list(message)
 
@@ -141,7 +141,7 @@ def choose_removal_option(message):
 
 
 def choose_subject(message):
-    """ Выбираем предмет, который надо отредактировать """
+    """Выбираем предмет, который надо отредактировать"""
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     table_data = access_current_sheet()
     df = table_data[2]
@@ -159,7 +159,7 @@ def choose_subject(message):
 
 
 def update_subject_deadline(message):
-    """ Обновляем дедлайн """
+    """Обновляем дедлайн"""
     global COL
     if not message.text.isdigit():
         info = bot.send_message(
@@ -191,7 +191,7 @@ def update_subject_deadline(message):
 
 
 def add_new_subject(message):
-    """ Вносим новое название предмета в Google-таблицу """
+    """Вносим новое название предмета в Google-таблицу"""
     table_data = access_current_sheet()
     ws = table_data[0]
     ws.append_row([message.text])
@@ -202,7 +202,7 @@ def add_new_subject(message):
 
 
 def add_new_subject_url(message):
-    """ Вносим новую ссылку на таблицу предмета в Google-таблицу """
+    """Вносим новую ссылку на таблицу предмета в Google-таблицу"""
     table_data = access_current_sheet()
     ws = table_data[0]
     df = table_data[2]
@@ -213,7 +213,7 @@ def add_new_subject_url(message):
 
 
 def update_subject_title(message):
-    """ Обновляем название предмета в Google-таблице """
+    """Обновляем название предмета в Google-таблице"""
     table_data = access_current_sheet()
     ws = table_data[0]
     global ROW, COL
@@ -225,7 +225,7 @@ def update_subject_title(message):
 
 
 def update_subject_url(message):
-    """ Обновляем ссылку на предмет в Google-таблице """
+    """Обновляем ссылку на предмет в Google-таблице"""
     table_data = access_current_sheet()
     ws = table_data[0]
     global ROW, COL
@@ -279,7 +279,7 @@ def update_cell_datetime(message):
 
 
 def delete_subject(message):
-    """ Удаляем предмет в Google-таблице """
+    """Удаляем предмет в Google-таблице"""
     table_data = access_current_sheet()
     ws = table_data[0]
     cell = ws.find(message.text)
@@ -290,7 +290,7 @@ def delete_subject(message):
 
 
 def clear_subject_list(message):
-    """ Удаляем все из Google-таблицы """
+    """Удаляем все из Google-таблицы"""
     table_data = access_current_sheet()
     ws = table_data[0]
     ws.clear()
