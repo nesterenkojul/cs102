@@ -77,6 +77,7 @@ def choose_action(message):
         today = datetime.now()
         table_data = access_current_sheet()
         df = table_data[2]
+        deadline_count = 0
         for i in range(df.shape[0]):
             for j in range(2, df.shape[1]):
                 cell_data = df.iat[i, j]
@@ -89,6 +90,8 @@ def choose_action(message):
                             f"{ df.iat[i, 0] }. Работа №{ j - 1 }\nДедлайн <b>{ df.iat[i, j] }</b>",
                             parse_mode="HTML",
                         )
+        if deadline_count == 0:
+            bot.send_message(message.chat.id, "Дедлайнов на ближайшей неделе нет. Гуляем!")
         sleep(10)
         start(message)
 
